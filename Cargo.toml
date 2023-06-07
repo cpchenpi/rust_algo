@@ -1,0 +1,11 @@
+[workspace]
+members = [
+    "random",
+    "recursive_function",
+    "dynamic_segtree",
+    "bit_trie",
+    "fenwick_tree_2d",
+    "number_theory",
+    "sparse_table",
+    "suffix_table",
+]
