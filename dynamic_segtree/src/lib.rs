@@ -265,8 +265,8 @@ where
 }
 
 impl<M: Monoid> DynSegtree<M> {
-    pub fn new(ml: i64, mr: i64) -> Self {
-        let mut tr = Vec::with_capacity(10_0000);
+    pub fn new(ml: i64, mr: i64, cap: usize) -> Self {
+        let mut tr = Vec::with_capacity(cap);
         tr.push(Node::new());
         Self { n: 1, tr, ml, mr }
     }
