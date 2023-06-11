@@ -71,6 +71,7 @@ fn ilog2(x: usize) -> usize {
     (usize::BITS - x.leading_zeros() - 1) as usize
 }
 
+#[derive(Clone)]
 pub struct SparseTable<T>
 where
     T: Repeatable,
