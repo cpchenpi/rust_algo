@@ -8,4 +8,5 @@ members = [
     "number_theory",
     "sparse_table",
     "suffix_table",
+    "hash",
 ]
