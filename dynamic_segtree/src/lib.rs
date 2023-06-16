@@ -359,10 +359,10 @@ where
             l
         } else {
             let mid = (l + r - 1) / 2;
-            if k <= self.tr[x].s {
+            if k <= self.tr[self.tr[x].lson].s {
                 self.inner_kth(self.tr[x].lson, l, mid, k)
             } else {
-                self.inner_kth(self.tr[x].rson, mid + 1, r, k - self.tr[x].s)
+                self.inner_kth(self.tr[x].rson, mid + 1, r, k - self.tr[self.tr[x].lson].s)
             }
         }
     }
