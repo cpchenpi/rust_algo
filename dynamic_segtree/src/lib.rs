@@ -1,4 +1,7 @@
+use std::ops::{Add, Sub};
+
 use self::dyn_monoid::Monoid;
+use dyn_monoid::dyn_internal_type_traits::Zero;
 #[allow(unused_imports)]
 pub use dyn_monoid::{Additive, BitwiseAnd, BitwiseOr, BitwiseXor, Max, Min, Multiplicative};
 
@@ -344,5 +347,27 @@ impl<M: Monoid> DynSegtree<M> {
 
     pub fn query(&mut self, ql: i64, qr: i64) -> M::S {
         self.que(0, self.ml, self.mr, ql, qr)
+    }
+}
+
+impl<M> DynSegtree<Additive<M>>
+where
+    M: Copy + Add<Output = M> + Zero + PartialOrd + Sub<Output = M>,
+{
+    fn inner_kth(&self, x: usize, l: i64, r: i64, k: M) -> i64 {
+        if l == r {
+            l
+        } else {
+            let mid = (l + r - 1) / 2;
+            if k <= self.tr[x].s {
+                self.inner_kth(self.tr[x].lson, l, mid, k)
+            } else {
+                self.inner_kth(self.tr[x].rson, mid + 1, r, k - self.tr[x].s)
+            }
+        }
+    }
+
+    pub fn kth(&self, k: M) -> i64 {
+        self.inner_kth(0, self.ml, self.mr, k)
     }
 }
