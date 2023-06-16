@@ -243,8 +243,8 @@ where
     M: Monoid,
 {
     s: M::S,
-    lson: usize,
-    rson: usize,
+    lson: u32,
+    rson: u32,
 }
 
 impl<M: Monoid> Node<M> {
@@ -268,6 +268,12 @@ where
 }
 
 impl<M: Monoid> DynSegtree<M> {
+    fn ls(&self, x: usize) -> usize {
+        self.tr[x].lson as usize
+    }
+    fn rs(&self, x: usize) -> usize {
+        self.tr[x].rson as usize
+    }
     pub fn new(ml: i64, mr: i64, cap: usize) -> Self {
         let mut tr = Vec::with_capacity(cap);
         tr.push(Node::new());
@@ -275,19 +281,18 @@ impl<M: Monoid> DynSegtree<M> {
     }
 
     fn pushup(&mut self, x: usize) {
-        self.tr[x].s =
-            M::binary_operation(&self.tr[self.tr[x].lson].s, &self.tr[self.tr[x].rson].s);
+        self.tr[x].s = M::binary_operation(&self.tr[self.ls(x)].s, &self.tr[self.rs(x)].s);
     }
 
     fn pushdown(&mut self, x: usize) {
         if self.tr[x].lson == 0 {
             self.tr.push(Node::new());
-            self.tr[x].lson = self.n;
+            self.tr[x].lson = self.n as u32;
             self.n += 1;
         }
         if self.tr[x].rson == 0 {
             self.tr.push(Node::new());
-            self.tr[x].rson = self.n;
+            self.tr[x].rson = self.n as u32;
             self.n += 1;
         }
     }
@@ -300,9 +305,9 @@ impl<M: Monoid> DynSegtree<M> {
         let mid = (l + r - 1) / 2;
         self.pushdown(x);
         if pos <= mid {
-            self.st(self.tr[x].lson, l, mid, pos, k);
+            self.st(self.ls(x), l, mid, pos, k);
         } else {
-            self.st(self.tr[x].rson, mid + 1, r, pos, k);
+            self.st(self.rs(x), mid + 1, r, pos, k);
         }
         self.pushup(x);
     }
@@ -319,9 +324,9 @@ impl<M: Monoid> DynSegtree<M> {
         let mid = (l + r - 1) / 2;
         self.pushdown(x);
         if pos <= mid {
-            self.upd(self.tr[x].lson, l, mid, pos, k);
+            self.upd(self.ls(x), l, mid, pos, k);
         } else {
-            self.upd(self.tr[x].rson, mid + 1, r, pos, k);
+            self.upd(self.rs(x), mid + 1, r, pos, k);
         }
         self.pushup(x);
     }
@@ -340,8 +345,8 @@ impl<M: Monoid> DynSegtree<M> {
         self.pushdown(x);
         let mid = (l + r - 1) / 2;
         M::binary_operation(
-            &self.que(self.tr[x].lson, l, mid, ql, qr),
-            &self.que(self.tr[x].rson, mid + 1, r, ql, qr),
+            &self.que(self.ls(x), l, mid, ql, qr),
+            &self.que(self.rs(x), mid + 1, r, ql, qr),
         )
     }
 
@@ -350,24 +355,27 @@ impl<M: Monoid> DynSegtree<M> {
     }
 }
 
-impl<M> DynSegtree<Additive<M>>
+type KthTree<M> = DynSegtree<Additive<M>>;
+
+impl<M> KthTree<M>
 where
     M: Copy + Add<Output = M> + Zero + PartialOrd + Sub<Output = M>,
 {
-    fn inner_kth(&self, x: usize, l: i64, r: i64, k: M) -> i64 {
+    fn inner_kth(&mut self, x: usize, l: i64, r: i64, k: M) -> i64 {
         if l == r {
             l
         } else {
+            self.pushdown(x);
             let mid = (l + r - 1) / 2;
-            if k <= self.tr[self.tr[x].lson].s {
-                self.inner_kth(self.tr[x].lson, l, mid, k)
+            if k <= self.tr[self.ls(x)].s {
+                self.inner_kth(self.ls(x), l, mid, k)
             } else {
-                self.inner_kth(self.tr[x].rson, mid + 1, r, k - self.tr[self.tr[x].lson].s)
+                self.inner_kth(self.rs(x), mid + 1, r, k - self.tr[self.ls(x)].s)
             }
         }
     }
 
-    pub fn kth(&self, k: M) -> i64 {
+    pub fn kth(&mut self, k: M) -> i64 {
         self.inner_kth(0, self.ml, self.mr, k)
     }
 }
