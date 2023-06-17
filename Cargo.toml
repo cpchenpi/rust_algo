@@ -9,4 +9,5 @@ members = [
     "sparse_table",
     "suffix_table",
     "hash",
+    "treap"
 ]
