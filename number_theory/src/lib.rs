@@ -2,9 +2,9 @@ use std::ops::{Add, Rem};
 
 pub fn gcd<T>(a: T, b: T) -> T
 where
-    T: Add<Output = T> + PartialEq<i32> + Rem<Output = T> + Copy,
+    T: Add<Output = T> + Rem<Output = T> + Copy + PartialEq,
 {
-    return if b == 0 { a } else { gcd(b, a % b) };
+    return if b + b == b { a } else { gcd(b, a % b) };
 }
 
 pub fn euler_vec(n: usize) -> (Vec<usize>, Vec<usize>) {
