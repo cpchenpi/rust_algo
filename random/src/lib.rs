@@ -1,4 +1,4 @@
-use std::time::SystemTime;
+use std::time::{SystemTime, UNIX_EPOCH};
 
 const NN: usize = 312;
 const MM: usize = 156;
@@ -85,4 +85,11 @@ impl<T> Shuffle for &mut [T] {
             self.swap(i, at);
         }
     }
+}
+
+pub fn now_time_u64() -> u64 {
+    SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .expect("Time went backwards!")
+        .as_secs()
 }
