@@ -1,5 +1,5 @@
 #[allow(dead_code)]
-pub struct Hash {
+pub struct StringHash {
     h: Vec<Vec<u32>>,
     pw: Vec<Vec<u32>>,
     p: Vec<u32>,
@@ -7,7 +7,7 @@ pub struct Hash {
     base: usize,
 }
 
-impl Hash {
+impl StringHash {
     pub fn new(s: &Vec<u8>, base: usize, p: Vec<u32>) -> Self {
         let n = s.len();
         let way = p.len();
