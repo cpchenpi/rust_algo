@@ -10,4 +10,5 @@ members = [
     "suffix_table",
     "string_hash",
     "treap",
+    "mo_algo",
 ]
