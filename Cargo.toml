@@ -11,4 +11,5 @@ members = [
     "string_hash",
     "treap",
     "mo_algo",
+    "tarjan",
 ]
