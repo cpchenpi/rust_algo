@@ -33,7 +33,7 @@ where
                     .as_secs(),
             ),
             val: vec![no_use_val],
-            rnd: vec![u32::MAX],
+            rnd: vec![0xFFFFFFFFu32],
             w: vec![0],
             sz: vec![0],
             root: 0,
