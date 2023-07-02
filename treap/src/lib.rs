@@ -62,31 +62,31 @@ where
         *x = t as usize;
     }
 
-    fn _insert(&mut self, x: &mut usize, v: T) {
+    fn _insert(&mut self, x: &mut usize, v: T, n: u32) {
         if *x == 0 {
             self.size += 1;
             *x = self.size;
-            self.sz.push(1);
-            self.w.push(1);
+            self.sz.push(n);
+            self.w.push(n);
             self.val.push(v);
             self.rnd.push(self.rd.gen() as u32);
             self.l.push(0);
             self.r.push(0);
             return;
         }
-        self.sz[*x] += 1;
+        self.sz[*x] += n;
         if self.val[*x] == v {
-            self.w[*x] += 1;
+            self.w[*x] += n;
         } else if self.val[*x] < v {
             let mut tmp = self.r[*x] as usize;
-            self._insert(&mut tmp, v);
+            self._insert(&mut tmp, v, n);
             self.r[*x] = tmp as u32;
             if self.rnd[self.r[*x] as usize] < self.rnd[*x] {
                 self.lrot(x);
             }
         } else {
             let mut tmp = self.l[*x] as usize;
-            self._insert(&mut tmp, v);
+            self._insert(&mut tmp, v, n);
             self.l[*x] = tmp as u32;
             if self.rnd[self.l[*x] as usize] < self.rnd[*x] {
                 self.rrot(x);
@@ -94,9 +94,10 @@ where
         }
     }
 
-    pub fn insert(&mut self, v: T) {
+    /// insert n value v
+    pub fn insert(&mut self, v: T, n: u32) {
         let mut tmp = self.root;
-        self._insert(&mut tmp, v);
+        self._insert(&mut tmp, v, n);
         self.root = tmp;
     }
 
@@ -140,7 +141,7 @@ where
         }
     }
 
-    /// can choose del num at most, return accual del num
+    /// delete at most n value v; return accual del num
     pub fn del(&mut self, v: &T, n: usize) -> usize {
         let mut tmp = self.root;
         let res = self._del(&mut tmp, v, n as u32);
@@ -168,7 +169,7 @@ where
 
     fn _rnk(&self, x: usize, v: &T) -> usize {
         if x == 0 {
-            return 0;
+            return 1;
         }
         if self.val[x] == *v {
             self.sz[self.l[x] as usize] as usize + 1
@@ -181,7 +182,8 @@ where
         }
     }
 
-    /// 1-indexed, 1 means not found
+    /// doesn't check if v exists!
+    /// if v doesn't exist, return the number of values less than v + 1
     pub fn rnk(&self, v: &T) -> usize {
         self._rnk(self.root, v)
     }
